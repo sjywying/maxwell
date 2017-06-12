@@ -4,6 +4,7 @@ import com.github.shyiko.mysql.binlog.event.*;
 import com.zendesk.maxwell.row.RowMap;
 import com.zendesk.maxwell.schema.Table;
 import com.zendesk.maxwell.schema.columndef.ColumnDef;
+import com.zendesk.maxwell.util.MurmurHash3;
 
 import java.io.Serializable;
 import java.util.*;
@@ -78,11 +79,18 @@ public class BinlogConnectorEvent {
 		return null;
 	}
 
-	private void writeData(Table table, RowMap row, Serializable[] data, BitSet includedColumns) {
+	private void writeData(String type, Table table, RowMap row, Serializable[] data, BitSet includedColumns) {
 		int dataIdx = 0, colIdx = 0;
+		StringBuffer ctypeSB = new StringBuffer();
 
 		for ( ColumnDef cd : table.getColumnList() ) {
 			if ( includedColumns.get(colIdx) ) {
+
+				//this.writeOldData()处理
+				if(!"update".equals(type)) {
+					ctypeSB.append(cd.getName()).append("_");
+				}
+
 				Object json = null;
 				if ( data[dataIdx] != null ) {
 					json = cd.asJSON(data[dataIdx]);
@@ -92,10 +100,22 @@ public class BinlogConnectorEvent {
 			}
 			colIdx++;
 		}
+
+		String ctype = ctypeSB.toString();
+		if("insert".equals(type)) {
+			row.setCtype(MurmurHash3.murmurhash3_x86_32(ctype, 0, ctype.length(), 2));
+		} else if("delete".equals(type)) {
+			row.setCtype(MurmurHash3.murmurhash3_x86_32(ctype, 0, ctype.length(), 3));
+		} else {
+			//this.writeOldData()处理
+		}
+
 	}
 
 	private void writeOldData(Table table, RowMap row, Serializable[] oldData, BitSet oldIncludedColumns) {
 		int dataIdx = 0, colIdx = 0;
+
+		StringBuffer ctypeSB = new StringBuffer();
 
 		for ( ColumnDef cd : table.getColumnList() ) {
 			if ( oldIncludedColumns.get(colIdx) ) {
@@ -103,6 +123,8 @@ public class BinlogConnectorEvent {
 				if ( oldData[dataIdx] != null ) {
 					json = cd.asJSON(oldData[dataIdx]);
 				}
+
+				ctypeSB.append(cd.getName()).append("_");
 
 				if (!row.hasData(cd.getName())) {
 					/*
@@ -121,6 +143,9 @@ public class BinlogConnectorEvent {
 			}
 			colIdx++;
 		}
+
+		String ctype = ctypeSB.toString();
+		row.setCtype(MurmurHash3.murmurhash3_x86_32(ctype, 0, ctype.length(), 1));
 	}
 
 	private RowMap buildRowMap(String type, Position position, Serializable[] data, Table table, BitSet includedColumns) {
@@ -133,7 +158,7 @@ public class BinlogConnectorEvent {
 			position
 		);
 
-		writeData(table, map, data, includedColumns);
+		writeData(type, table, map, data, includedColumns);
 		return map;
 	}
 

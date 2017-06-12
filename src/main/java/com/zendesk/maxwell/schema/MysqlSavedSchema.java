@@ -193,7 +193,7 @@ public class MysqlSavedSchema {
 		);
 
 		tableInsert = conn.prepareStatement(
-				"INSERT INTO `tables` SET schema_id = ?, database_id = ?, name = ?, charset=?, pk=?",
+				"INSERT INTO `tables` SET schema_id = ?, database_id = ?, name = ?, charset=?, pk=?, topic_name=?",
 				Statement.RETURN_GENERATED_KEYS
 		);
 
@@ -208,7 +208,7 @@ public class MysqlSavedSchema {
 			Long dbId = executeInsert(databaseInsert, schemaId, d.getName(), d.getCharset());
 
 			for (Table t : d.getTableList()) {
-				Long tableId = executeInsert(tableInsert, schemaId, dbId, t.getName(), t.getCharset(), t.getPKString());
+				Long tableId = executeInsert(tableInsert, schemaId, dbId, t.getName(), t.getCharset(), t.getPKString(), "test_mysql_"+t.getDatabase()+"_"+t.getName());
 
 
 				for (ColumnDef c : t.getColumnList()) {
@@ -442,6 +442,7 @@ public class MysqlSavedSchema {
 						"d.name AS dbName," +
 						"d.charset AS dbCharset," +
 						"t.name AS tableName," +
+						"t.topic_name AS topicName" +
 						"t.charset AS tableCharset," +
 						"t.pk AS tablePk," +
 						"t.id AS tableId," +
@@ -472,6 +473,7 @@ public class MysqlSavedSchema {
 
 			// Table
 			String tName = rs.getString("tableName");
+			String topicName = rs.getString("topicName");
 			String tCharset = rs.getString("tableCharset");
 			String tPKs = rs.getString("tablePk");
 
@@ -501,6 +503,7 @@ public class MysqlSavedSchema {
 				columnIndex = 0;
 			}
 
+			currentTable.setTopicName(topicName);
 
 			if (columnName == null) {
 				// If columnName is null, there are no columns connected to this table

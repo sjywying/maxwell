@@ -10,6 +10,7 @@ import com.zendesk.maxwell.replication.Position;
 import com.zendesk.maxwell.row.RowMap;
 import com.zendesk.maxwell.row.RowMap.KeyFormat;
 import com.zendesk.maxwell.schema.ddl.DDLMap;
+import com.zendesk.maxwell.util.KafkaUtils;
 import com.zendesk.maxwell.util.StoppableTask;
 import com.zendesk.maxwell.util.StoppableTaskState;
 import org.apache.kafka.clients.producer.Callback;
@@ -122,7 +123,8 @@ class MaxwellKafkaProducerWorker extends AbstractAsyncProducer implements Runnab
 	private final MaxwellKafkaPartitioner partitioner;
 	private final MaxwellKafkaPartitioner ddlPartitioner;
 	private final KeyFormat keyFormat;
-	private final boolean interpolateTopic;
+	private boolean interpolateTopic = false;
+	private boolean autoTopic = false;
 	private final Timer metricsTimer;
 	private final ArrayBlockingQueue<RowMap> queue;
 	private Thread thread;
@@ -136,7 +138,11 @@ class MaxwellKafkaProducerWorker extends AbstractAsyncProducer implements Runnab
 			this.topic = "maxwell";
 		}
 
-		this.interpolateTopic = this.topic.contains("%{");
+		if("*".equals(this.topic)) {
+			autoTopic = true;
+		} else {
+			this.interpolateTopic = this.topic.contains("%{");
+		}
 		this.kafka = new KafkaProducer<>(kafkaProperties, new StringSerializer(), new StringSerializer());
 
 		String hash = context.getConfig().kafkaPartitionHash;
@@ -188,7 +194,14 @@ class MaxwellKafkaProducerWorker extends AbstractAsyncProducer implements Runnab
 	}
 
 	private String generateTopic(String topic, RowMap r){
-		if ( interpolateTopic )
+		if(autoTopic) {
+			 String top = this.context.getTableTopic().get(KafkaUtils.getTopicKey(r.getDatabase(), r.getTable()));
+			if(top == null || "".equals(top)) {
+				return KafkaUtils.default_topic;
+			} else {
+				return top;
+			}
+		} else if ( interpolateTopic )
 			return topic.replaceAll("%\\{database\\}", r.getDatabase()).replaceAll("%\\{table\\}", r.getTable());
 		else
 			return topic;

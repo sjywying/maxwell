@@ -32,6 +32,7 @@ public class RowMap implements Serializable {
 	private Position nextPosition;
 
 	private Long xid;
+	private int ctype = -1;
 	private boolean txCommit;
 	private Long serverId;
 	private Long threadId;
@@ -223,6 +224,7 @@ public class RowMap implements Serializable {
 		g.writeStringField("table", this.table);
 		g.writeStringField("type", this.rowType);
 		g.writeNumberField("ts", this.timestampSeconds);
+		g.writeNumberField("ctype", this.ctype);
 
 		if ( outputConfig.includesCommitInfo ) {
 			if ( this.xid != null )
@@ -265,9 +267,9 @@ public class RowMap implements Serializable {
 
 		writeMapToJSON("data", this.data, outputConfig.includesNulls);
 
-		if ( !this.oldData.isEmpty() ) {
+//		if ( !this.oldData.isEmpty() ) {
 			writeMapToJSON("old", this.oldData, true);
-		}
+//		}
 
 		g.writeEndObject(); // end of row
 		g.flush();
@@ -359,6 +361,14 @@ public class RowMap implements Serializable {
 
 	public String getDatabase() {
 		return database;
+	}
+
+	public int getCtype() {
+		return ctype;
+	}
+
+	public void setCtype(int ctype) {
+		this.ctype = ctype;
 	}
 
 	public String getTable() {

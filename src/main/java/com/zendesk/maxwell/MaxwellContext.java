@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Map;
 
 import com.zendesk.maxwell.metrics.MaxwellMetrics;
 import com.zendesk.maxwell.bootstrap.AbstractBootstrapper;
@@ -48,6 +49,17 @@ public class MaxwellContext {
 	private Integer mysqlMajorVersion;
 	private Integer mysqlMinorVersion;
 	private Replicator replicator;
+
+
+	private Map<String, String> tableTopic;
+
+	public Map<String, String> getTableTopic() {
+		return tableTopic;
+	}
+
+	public void setTableTopic(Map<String, String> tableTopic) {
+		this.tableTopic = tableTopic;
+	}
 
 	public MaxwellContext(MaxwellConfig config) throws SQLException {
 		this.config = config;

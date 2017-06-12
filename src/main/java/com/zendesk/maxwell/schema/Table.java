@@ -20,6 +20,7 @@ public class Table {
 	public String database;
 	@JsonProperty("table")
 	public String name;
+	public String topicName;
 	private TableColumnList columns;
 	public String charset;
 	private List<String> pkColumnNames;
@@ -64,6 +65,14 @@ public class Table {
 
 	public String getName() {
 		return this.name;
+	}
+
+	public String getTopicName() {
+		return topicName;
+	}
+
+	public void setTopicName(String topicName) {
+		this.topicName = topicName;
 	}
 
 	public int findColumnIndex(String name) {

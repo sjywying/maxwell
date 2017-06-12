@@ -13,15 +13,17 @@ import com.zendesk.maxwell.replication.BinlogPosition;
 import com.zendesk.maxwell.replication.MaxwellReplicator;
 import com.zendesk.maxwell.replication.Position;
 import com.zendesk.maxwell.replication.Replicator;
-import com.zendesk.maxwell.schema.MysqlPositionStore;
-import com.zendesk.maxwell.schema.MysqlSchemaStore;
-import com.zendesk.maxwell.schema.SchemaStoreSchema;
+import com.zendesk.maxwell.schema.*;
+import com.zendesk.maxwell.util.KafkaUtils;
 import com.zendesk.maxwell.util.Logging;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 public class Maxwell implements Runnable {
 	static {
@@ -171,7 +173,27 @@ public class Maxwell implements Runnable {
 		this.context.setPosition(initPosition);
 
 		MysqlSchemaStore mysqlSchemaStore = new MysqlSchemaStore(this.context, initPosition);
-		mysqlSchemaStore.getSchema(); // trigger schema to load / capture before we start the replicator.
+		Schema schema = mysqlSchemaStore.getSchema(); // trigger schema to load / capture before we start the replicator.
+
+		if("kafka".equals(this.context.getConfig().producerType) && "*".equals(this.context.getConfig().kafkaTopic)) {
+			//key ${databasename}_{tablename}, value topicname
+			final Map<String, String> tableTopic = new HashMap<String, String>();
+
+			for (Iterator<Database> iterator = schema.getDatabases().iterator(); iterator.hasNext(); ) {
+				Database database = iterator.next();
+
+				for (Iterator<Table> iterator1 = database.getTableList().iterator(); iterator1.hasNext(); ) {
+					Table table = iterator1.next();
+
+					MaxwellFilter.matches(context.getFilter(), table.getDatabase(), table.getName());
+
+					tableTopic.put(KafkaUtils.getTopicKey(table.getDatabase(), table.getName()), table.getTopicName());
+				}
+			}
+
+			context.setTableTopic(tableTopic);
+		}
+
 
 		if ( this.config.shykoMode )
 			this.replicator = new BinlogConnectorReplicator(mysqlSchemaStore, producer, bootstrapper, this.context, initPosition);

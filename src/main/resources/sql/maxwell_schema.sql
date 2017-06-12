@@ -27,6 +27,7 @@ CREATE TABLE IF NOT EXISTS `tables` (
   schema_id   int unsigned,
   database_id int unsigned,
   name      varchar(255),
+  topic_name varchar(255),
   charset   varchar(255),
   pk        varchar(1024) charset 'utf8',
   index (schema_id),
