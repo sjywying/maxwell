@@ -185,11 +185,13 @@ public class BinlogConnectorEvent {
 					   In this case we should put what's in the "before" image into the "data" section, not the "old".
 					 */
 					row.putData(cd.getName(), json);
-				} else {
-					if (!Objects.equals(row.getData(cd.getName()), json)) {
-						row.putOldData(cd.getName(), json);
-					}
 				}
+//				else {
+//					if (!Objects.equals(row.getData(cd.getName()), json)) {
+//						row.putOldData(cd.getName(), json);
+//					}
+//				}
+				row.putOldData(cd.getName(), json);
 				dataIdx++;
 			}
 			colIdx++;
