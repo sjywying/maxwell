@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Map;
 
 import com.zendesk.maxwell.metrics.MaxwellMetrics;
@@ -52,6 +53,7 @@ public class MaxwellContext {
 
 
 	private Map<String, String> tableTopic;
+	private  Map<String, Map<String, List<String>>> mergeColumns;
 
 	public Map<String, String> getTableTopic() {
 		return tableTopic;
@@ -59,6 +61,14 @@ public class MaxwellContext {
 
 	public void setTableTopic(Map<String, String> tableTopic) {
 		this.tableTopic = tableTopic;
+	}
+
+	public  Map<String, Map<String, List<String>>> getMergeColumns() {
+		return mergeColumns;
+	}
+
+	public void setMergeColumns( Map<String, Map<String, List<String>>> mergeColumns) {
+		this.mergeColumns = mergeColumns;
 	}
 
 	public MaxwellContext(MaxwellConfig config) throws SQLException {

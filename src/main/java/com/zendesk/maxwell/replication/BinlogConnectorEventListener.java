@@ -10,6 +10,7 @@ import com.github.shyiko.mysql.binlog.event.Event;
 import com.github.shyiko.mysql.binlog.event.EventType;
 import com.github.shyiko.mysql.binlog.event.GtidEventData;
 
+import com.zendesk.maxwell.MaxwellContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,15 +23,18 @@ class BinlogConnectorEventListener implements BinaryLogClient.EventListener,
 	protected final AtomicBoolean mustStop = new AtomicBoolean(false);
 	private final BinaryLogClient client;
 	private String gtid;
+	private MaxwellContext context;
 
 	public BinlogConnectorEventListener(
 		BinaryLogClient client,
 		BlockingQueue<BinlogConnectorEvent> q,
-		Timer queueTimer
+		Timer queueTimer,
+		MaxwellContext context
 	) {
 		this.client = client;
 		this.queue = q;
 		this.queueTimer = queueTimer;
+		this.context = context;
 	}
 
 	public void stop() {
@@ -51,7 +55,7 @@ class BinlogConnectorEventListener implements BinaryLogClient.EventListener,
 				gtid = ((GtidEventData)event.getData()).getGtid();
 			}
 
-			BinlogConnectorEvent ep = new BinlogConnectorEvent(event, client.getBinlogFilename(), client.getGtidSet(), gtid);
+			BinlogConnectorEvent ep = new BinlogConnectorEvent(event, client.getBinlogFilename(), client.getGtidSet(), gtid, context.getMergeColumns());
 			try {
 				if ( queue.offer(ep, 100, TimeUnit.MILLISECONDS ) ) {
 					break;

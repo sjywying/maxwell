@@ -15,14 +15,35 @@ public class BinlogConnectorEvent {
 	private final Event event;
 	private final String gtidSetStr;
 	private final String gtid;
+	//tablename, afterMergeName, list merge_column
+	private final Map<String, Map<String, List<String>>> mergeColumns;
+	private final Set<String> columns = new HashSet<>();
 
-	public BinlogConnectorEvent(Event event, String filename, String gtidSetStr, String gtid) {
+	public BinlogConnectorEvent(Event event, String filename, String gtidSetStr, String gtid, Map<String, Map<String, List<String>>> mergeColumns) {
 		this.event = event;
 		this.gtidSetStr = gtidSetStr;
 		this.gtid = gtid;
 		EventHeaderV4 hV4 = (EventHeaderV4) event.getHeader();
 		this.nextPosition = new BinlogPosition(gtidSetStr, gtid, hV4.getNextPosition(), filename);
 		this.position = new BinlogPosition(gtidSetStr, gtid, hV4.getPosition(), filename);
+		this.mergeColumns = mergeColumns;
+
+		if(mergeColumns != null && mergeColumns.size() > 0) {
+			for (Iterator<String> iterator = mergeColumns.keySet().iterator(); iterator.hasNext(); ) {
+				Map<String, List<String>> next = mergeColumns.get(iterator.next());
+				if(next != null && !next.isEmpty()) {
+					for (Iterator<String> iterator1 = next.keySet().iterator(); iterator1.hasNext(); ) {
+						List<String> strings = next.get(iterator1.next());
+						if(strings != null && !strings.isEmpty()) {
+							for (Iterator<String> stringIterator = strings.iterator(); stringIterator.hasNext(); ) {
+								String s = stringIterator.next();
+								columns.add(s);
+							}
+						}
+					}
+				}
+			}
+		}
 	}
 
 	public Event getEvent() {
@@ -82,6 +103,7 @@ public class BinlogConnectorEvent {
 	private void writeData(String type, Table table, RowMap row, Serializable[] data, BitSet includedColumns) {
 		int dataIdx = 0, colIdx = 0;
 		StringBuffer ctypeSB = new StringBuffer();
+		Map<String, String> kv = new HashMap<>();
 
 		for ( ColumnDef cd : table.getColumnList() ) {
 			if ( includedColumns.get(colIdx) ) {
@@ -96,9 +118,38 @@ public class BinlogConnectorEvent {
 					json = cd.asJSON(data[dataIdx]);
 				}
 				row.putData(cd.getName(), json);
+
+
+				if(columns.contains(cd.getName())) {
+					kv.put(cd.getName(), json == null ? "":json.toString());
+				}
+
 				dataIdx++;
 			}
 			colIdx++;
+		}
+
+		//merge columns
+		if(mergeColumns.containsKey(table.getName())) {
+			Map<String, List<String>> mergecolums = mergeColumns.get(table.getName());
+			for (Iterator<String> iterator = mergecolums.keySet().iterator(); iterator.hasNext(); ) {
+				String key = iterator.next();
+
+				boolean isfirst = true;
+				StringBuffer tempData = new StringBuffer();
+				List<String> columnKeys = mergecolums.get(key);
+				for (Iterator<String> stringIterator = columnKeys.iterator(); stringIterator.hasNext(); ) {
+					String columnKey = stringIterator.next();
+					if(isfirst) {
+						tempData.append(kv.get(columnKey));
+						isfirst = false;
+					} else {
+						tempData.append(",").append(kv.get(columnKey));
+					}
+				}
+
+				row.putData(key, tempData.toString());
+			}
 		}
 
 		String ctype = ctypeSB.toString();

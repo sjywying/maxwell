@@ -30,19 +30,22 @@ public class Recovery {
 	private final String maxwellDatabaseName;
 	private final RecoverySchemaStore schemaStore;
 	private final boolean shykoMode;
+	private final MaxwellContext context;
 
 	public Recovery(MaxwellMysqlConfig replicationConfig,
 					String maxwellDatabaseName,
 					ConnectionPool replicationConnectionPool,
 					CaseSensitivity caseSensitivity,
 					RecoveryInfo recoveryInfo,
-					boolean shykoMode) {
+					boolean shykoMode,
+					MaxwellContext context) {
 		this.replicationConfig = replicationConfig;
 		this.replicationConnectionPool = replicationConnectionPool;
 		this.recoveryInfo = recoveryInfo;
 		this.schemaStore = new RecoverySchemaStore(replicationConnectionPool, maxwellDatabaseName, caseSensitivity);
 		this.maxwellDatabaseName = maxwellDatabaseName;
 		this.shykoMode = shykoMode;
+		this.context = context;
 	}
 
 	public Position recover() throws Exception {
@@ -72,8 +75,8 @@ public class Recovery {
 						metrics,
 						position,
 						true,
-						recoveryInfo.clientID
-						);
+						recoveryInfo.clientID,
+						context);
 			} else {
 				replicator = new MaxwellReplicator(
 						this.schemaStore,

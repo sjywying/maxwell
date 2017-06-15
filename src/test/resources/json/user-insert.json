@@ -1,1 +1,38 @@
-{"database":"MyDatabase","table":"User","type":"insert","ts":1486439516,"xid":5694,"commit":true,"data":{"UserID":20,"FirstName":"Fiz","MiddleName":null,"LastName":"Buz","Version":1486703131000}}
+{
+  "id": "mysql_changehistory_order",
+  "generationTime": "2017-06-14T20:12:51.643+08:00",
+  "payload": {
+    "dataSource": "mysql_changehistory_order",
+    "topic": "test_bike_hardware",
+    "partitions": 3,
+    "replicas": 1,
+    "durationSeconds": 600,
+    "activeTasks": [
+      {
+        "id": "index_kafka_mysql_changehistory_order_89a019cfe30b730_enipkhcp",
+        "startingOffsets": {"0": 272416},
+        "startTime": "2017-06-14T20:05:18.578+08:00",
+        "remainingSeconds": 146,
+        "type": "ACTIVE",
+        "currentOffsets": {"0": 272416}
+      },
+      {
+        "id": "index_kafka_mysql_changehistory_order_d9ff9147ef03a5e_dphlbclf",
+        "startingOffsets": {"1": 269134},
+        "startTime": "2017-06-14T20:05:16.494+08:00",
+        "remainingSeconds": 144,
+        "type": "ACTIVE",
+        "currentOffsets": {"1": 269134}
+      },
+      {
+        "id": "index_kafka_mysql_changehistory_order_12c338e9fb3d283_fmddhgfe",
+        "startingOffsets": {"2": 269588},
+        "startTime": "2017-06-14T20:05:17.334+08:00",
+        "remainingSeconds": 145,
+        "type": "ACTIVE",
+        "currentOffsets": {"2": 269588}
+      }
+    ],
+    "publishingTasks": []
+  }
+}

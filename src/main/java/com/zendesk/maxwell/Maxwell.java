@@ -21,9 +21,7 @@ import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 public class Maxwell implements Runnable {
 	static {
@@ -66,7 +64,8 @@ public class Maxwell implements Runnable {
 				this.context.getReplicationConnectionPool(),
 				this.context.getCaseSensitivity(),
 				recoveryInfo,
-				this.config.shykoMode
+				this.config.shykoMode,
+				this.context
 			);
 
 			recoveredPosition = masterRecovery.recover();
@@ -168,6 +167,26 @@ public class Maxwell implements Runnable {
 		AbstractProducer producer = this.context.getProducer();
 		AbstractBootstrapper bootstrapper = this.context.getBootstrapper();
 
+		if( null != this.config.outputMergeColumns && !"".equals(this.config.outputMergeColumns)) {
+			Map<String, Map<String, List<String>>> mergeColumns = new HashMap<>();
+			//output_merge_columns=start_coordinate:STARTPOSITIONX,STARTPOSITIONY;end_coordinate:ENDPOSITIONX,ENDPOSITIONY
+			String[] columnsKVs = this.config.outputMergeColumns.split(";");
+			for (int i = 0; i < columnsKVs.length; i++) {
+				String[] columnsKVArr = columnsKVs[i].split(":");
+				List<String> columnsV = Arrays.asList(columnsKVArr[2].split(","));
+
+				if(mergeColumns.containsKey(columnsKVArr[0])) {
+					mergeColumns.get(columnsKVArr[0]).put(columnsKVArr[1], columnsV);
+				} else {
+					Map<String, List<String>> mergeColumn = new HashMap<>();
+					mergeColumn.put(columnsKVArr[1], columnsV);
+					mergeColumns.put(columnsKVArr[0], mergeColumn);
+				}
+			}
+
+			this.context.setMergeColumns(mergeColumns);
+		}
+
 		Position initPosition = getInitialPosition();
 		logBanner(producer, initPosition);
 		this.context.setPosition(initPosition);
@@ -193,7 +212,6 @@ public class Maxwell implements Runnable {
 
 			context.setTableTopic(tableTopic);
 		}
-
 
 		if ( this.config.shykoMode )
 			this.replicator = new BinlogConnectorReplicator(mysqlSchemaStore, producer, bootstrapper, this.context, initPosition);
@@ -230,6 +248,7 @@ public class Maxwell implements Runnable {
 
 			maxwell.start();
 		} catch ( SQLException e ) {
+			e.printStackTrace();
 			// catch SQLException explicitly because we likely don't care about the stacktrace
 			LOGGER.error("SQLException: " + e.getLocalizedMessage());
 			LOGGER.error(e.getLocalizedMessage());

@@ -28,7 +28,7 @@ public class BinlogConnectorReplicator extends AbstractReplicator implements Rep
 	private final long MAX_TX_ELEMENTS = 10000;
 	protected SchemaStore schemaStore;
 
-	private final LinkedBlockingDeque<BinlogConnectorEvent> queue = new LinkedBlockingDeque<>(20);
+	private final LinkedBlockingDeque<BinlogConnectorEvent> queue = new LinkedBlockingDeque<>(2000);
 
 	protected BinlogConnectorEventListener binlogEventListener;
 
@@ -48,7 +48,8 @@ public class BinlogConnectorReplicator extends AbstractReplicator implements Rep
 		Metrics metrics,
 		Position start,
 		boolean stopOnEOF,
-		String clientID
+		String clientID,
+		MaxwellContext context
 	) {
 		super(clientID, bootstrapper, maxwellSchemaDatabaseName, producer, metrics, start);
 		this.schemaStore = schemaStore;
@@ -71,7 +72,7 @@ public class BinlogConnectorReplicator extends AbstractReplicator implements Rep
 		this.client.setEventDeserializer(eventDeserializer);
 
 		Timer replicationQueueTimer = metrics.getRegistry().timer(metrics.metricName("replication", "queue", "time"));
-		this.binlogEventListener = new BinlogConnectorEventListener(client, queue, replicationQueueTimer);
+		this.binlogEventListener = new BinlogConnectorEventListener(client, queue, replicationQueueTimer, context);
 
 		this.client.setBlocking(!stopOnEOF);
 		this.client.registerEventListener(binlogEventListener);
@@ -91,7 +92,8 @@ public class BinlogConnectorReplicator extends AbstractReplicator implements Rep
 			ctx.getMetrics(),
 			start,
 			false,
-			ctx.getConfig().clientID
+			ctx.getConfig().clientID,
+			ctx
 		);
 	}
 

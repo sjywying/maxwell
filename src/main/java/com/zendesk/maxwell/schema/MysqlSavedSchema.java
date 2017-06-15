@@ -208,7 +208,7 @@ public class MysqlSavedSchema {
 			Long dbId = executeInsert(databaseInsert, schemaId, d.getName(), d.getCharset());
 
 			for (Table t : d.getTableList()) {
-				Long tableId = executeInsert(tableInsert, schemaId, dbId, t.getName(), t.getCharset(), t.getPKString(), "test_mysql_"+t.getDatabase()+"_"+t.getName());
+				Long tableId = executeInsert(tableInsert, schemaId, dbId, t.getName(), t.getCharset(), t.getPKString(), null);
 
 
 				for (ColumnDef c : t.getColumnList()) {
@@ -442,7 +442,7 @@ public class MysqlSavedSchema {
 						"d.name AS dbName," +
 						"d.charset AS dbCharset," +
 						"t.name AS tableName," +
-						"t.topic_name AS topicName" +
+						"t.topic_name AS topicName," +
 						"t.charset AS tableCharset," +
 						"t.pk AS tablePk," +
 						"t.id AS tableId," +

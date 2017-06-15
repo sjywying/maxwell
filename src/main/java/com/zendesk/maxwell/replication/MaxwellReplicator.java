@@ -26,7 +26,7 @@ public class MaxwellReplicator extends AbstractReplicator implements Replicator 
 	private final long MAX_TX_ELEMENTS = 10000;
 	protected SchemaStore schemaStore;
 
-	private final LinkedBlockingDeque<BinlogEventV4> queue = new LinkedBlockingDeque<>(20);
+	private final LinkedBlockingDeque<BinlogEventV4> queue = new LinkedBlockingDeque<>(2000);
 
 	protected BinlogEventListener binlogEventListener;
 

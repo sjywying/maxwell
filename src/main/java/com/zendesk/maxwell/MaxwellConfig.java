@@ -50,6 +50,7 @@ public class MaxwellConfig extends AbstractConfig {
 	public String kinesisStream;
 	public boolean kinesisMd5Keys;
 
+	public String outputMergeColumns;
 	public String outputFile;
 	public MaxwellOutputConfig outputConfig;
 	public String log_level;
@@ -349,6 +350,8 @@ public class MaxwellConfig extends AbstractConfig {
 		this.kinesisMd5Keys = fetchBooleanOption("kinesis_md5_keys", options, properties, false);
 
 		this.outputFile = fetchOption("output_file", options, properties, null);
+
+		this.outputMergeColumns = fetchOption("output_merge_columns", options, properties, null);
 
 		this.metricsPrefix = fetchOption("metrics_prefix", options, properties, "MaxwellMetrics");
 		this.metricsReportingType = fetchOption("metrics_type", options, properties, null);
