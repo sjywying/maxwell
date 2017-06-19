@@ -175,7 +175,6 @@ public class BinlogConnectorEvent {
 					json = cd.asJSON(oldData[dataIdx]);
 				}
 
-				ctypeSB.append(cd.getName()).append("_");
 
 				if (!row.hasData(cd.getName())) {
 					/*
@@ -186,12 +185,13 @@ public class BinlogConnectorEvent {
 					 */
 					row.putData(cd.getName(), json);
 				}
-//				else {
-//					if (!Objects.equals(row.getData(cd.getName()), json)) {
-//						row.putOldData(cd.getName(), json);
-//					}
-//				}
-				row.putOldData(cd.getName(), json);
+				else {
+					if (!Objects.equals(row.getData(cd.getName()), json)) {
+						row.putOldData(cd.getName(), json);
+						ctypeSB.append(cd.getName()).append("_");
+					}
+				}
+//				row.putOldData(cd.getName(), json);
 				dataIdx++;
 			}
 			colIdx++;

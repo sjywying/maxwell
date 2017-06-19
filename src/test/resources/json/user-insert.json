@@ -1,38 +1,72 @@
 {
-  "id": "mysql_changehistory_order",
-  "generationTime": "2017-06-14T20:12:51.643+08:00",
-  "payload": {
-    "dataSource": "mysql_changehistory_order",
-    "topic": "test_bike_hardware",
-    "partitions": 3,
-    "replicas": 1,
-    "durationSeconds": 600,
-    "activeTasks": [
-      {
-        "id": "index_kafka_mysql_changehistory_order_89a019cfe30b730_enipkhcp",
-        "startingOffsets": {"0": 272416},
-        "startTime": "2017-06-14T20:05:18.578+08:00",
-        "remainingSeconds": 146,
-        "type": "ACTIVE",
-        "currentOffsets": {"0": 272416}
-      },
-      {
-        "id": "index_kafka_mysql_changehistory_order_d9ff9147ef03a5e_dphlbclf",
-        "startingOffsets": {"1": 269134},
-        "startTime": "2017-06-14T20:05:16.494+08:00",
-        "remainingSeconds": 144,
-        "type": "ACTIVE",
-        "currentOffsets": {"1": 269134}
-      },
-      {
-        "id": "index_kafka_mysql_changehistory_order_12c338e9fb3d283_fmddhgfe",
-        "startingOffsets": {"2": 269588},
-        "startTime": "2017-06-14T20:05:17.334+08:00",
-        "remainingSeconds": 145,
-        "type": "ACTIVE",
-        "currentOffsets": {"2": 269588}
-      }
-    ],
-    "publishingTasks": []
+  "database": "mbk_redpacket",
+  "table": "mbk_redpacket_water",
+  "type": "update",
+  "ts": 1497890969,
+  "ctype": 471041068,
+  "xid": 2230056948,
+  "commit": true,
+  "position": "mysql-bin.000595:378100100",
+  "gtid": "1f7b02c6-07db-11e7-8b6b-18ded7a38036:1388353299",
+  "server_id": 89273,
+  "thread_id": 1766108,
+  "data": {
+    "rp_water_id": "RP535121623276769792008633511494770664",
+    "userid": "53512162327676979200863351",
+    "fee": 168,
+    "bikeid": "5920126740",
+    "mobile": "13850166630",
+    "city_code": "0591",
+    "country": 0,
+    "rp_withdraw_id": "RPW316551497890968",
+    "recive_time": "2017-05-14 14:04:25",
+    "recive_status": 1,
+    "withdraw_time": "2017-06-19 16:49:28",
+    "withdraw_status": 2,
+    "create_time": "2017-05-14 14:04:25",
+    "update_time": "2017-06-19 16:49:29",
+    "remark": "",
+    "type": 0,
+    "source": 0,
+    "int_column": null,
+    "bigint_column": null,
+    "var_cloumn": null,
+    "order_id": "MBK59201267401494769178830",
+    "origin_order_fee": 100,
+    "actual_order_fee": 0,
+    "coefficient": 1.0
+  },
+  "old": {
+    "rp_water_id": "RP535121623276769792008633511494770664",
+    "userid": "53512162327676979200863351",
+    "fee": 168,
+    "bikeid": "5920126740",
+    "mobile": "13850166630",
+    "city_code": "0591",
+    "country": 0,
+    "rp_withdraw_id": "RPW316551497890968",
+    "recive_time": "2017-05-14 14:04:25",
+    "recive_status": 1,
+    "withdraw_time": "2017-06-19 16:49:28",
+    "withdraw_status": 1,
+    "create_time": "2017-05-14 14:04:25",
+    "update_time": "2017-06-19 16:49:28",
+    "remark": "",
+    "type": 0,
+    "source": 0,
+    "int_column": null,
+    "bigint_column": null,
+    "var_cloumn": null,
+    "order_id": "MBK59201267401494769178830",
+    "origin_order_fee": 100,
+    "actual_order_fee": 0,
+    "coefficient": 1.0
   }
 }
+{"database": "mbk_redpacket", "table": "mbk_redpacket_water", "type":"update", "ts": 1497890969, "ctype": 471041068,"xid": 2230056950, "commit": true, "position":"mysql-bin.000595:378100777", "gtid": "1f7b02c6-07db-11e7-8b6b-18ded7a38036:1388353300", "server_id": 89273,"thread_id": 1766108, "data":{"rp_water_id": "RP535121623276769792008633511495201951", "userid": "53512162327676979200863351", "fee": 121, "bikeid": "5920110152", "mobile": "13850166630", "city_code": "0591", "country": 0, "rp_withdraw_id": "RPW316551497890968", "recive_time": "2017-05-19 13:52:31", "recive_status": 1, "withdraw_time": "2017-06-19 16:49:28", "withdraw_status": 2, "create_time": "2017-05-19 13:52:31", "update_time": "2017-06-19 16:49:29", "remark": "", "type": 0, "source": 0, "int_column": null, "bigint_column": null, "var_cloumn": null, "order_id": "MBK59201101521495201087472", "origin_order_fee": 100, "actual_order_fee": 0, "coefficient": 1.0}, "old":{"rp_water_id": "RP535121623276769792008633511495201951", "userid": "53512162327676979200863351", "fee": 121, "bikeid": "5920110152", "mobile": "13850166630", "city_code": "0591", "country": 0, "rp_withdraw_id": "RPW316551497890968", "recive_time": "2017-05-19 13:52:31", "recive_status": 1, "withdraw_time": "2017-06-19 16:49:28", "withdraw_status": 1, "create_time": "2017-05-19 13:52:31", "update_time": "2017-06-19 16:49:28", "remark": "", "type": 0, "source": 0, "int_column": null, "bigint_column": null, "var_cloumn": null, "order_id": "MBK59201101521495201087472", "origin_order_fee": 100, "actual_order_fee": 0, "coefficient": 1.0
+}}
+{
+"database": "mbk_redpacket", "table": "mbk_redpacket_water", "type": "update", "ts": 1497890969, "ctype": 471041068, "xid": 2230056952, "commit": true, "position": "mysql-bin.000595:378101454", "gtid": "1f7b02c6-07db-11e7-8b6b-18ded7a38036:1388353301", "server_id": 89273, "thread_id": 1766108, "data":{"rp_water_id": "RP535121623276769792008633511495435319", "userid": "53512162327676979200863351","fee": 105, "bikeid": "5920039679", "mobile":"13850166630", "city_code": "0591", "country": 0,"rp_withdraw_id": "RPW316551497890968", "recive_time": "2017-05-22 06:42:00", "recive_status":1, "withdraw_time": "2017-06-19 16:49:28", "withdraw_status": 2,"create_time": "2017-05-22 06:42:00", "update_time": "2017-06-19 16:49:29", "remark":"", "type": 0, "source": 0,"int_column": null, "bigint_column": null, "var_cloumn":null, "order_id": "MBK59200396791495433173267", "origin_order_fee": 200,"actual_order_fee": 0, "coefficient": 1.0}, "old":{"rp_water_id": "RP535121623276769792008633511495435319", "userid": "53512162327676979200863351","fee": 105, "bikeid": "5920039679", "mobile":"13850166630", "city_code": "0591", "country": 0,"rp_withdraw_id": "RPW316551497890968", "recive_time": "2017-05-22 06:42:00", "recive_status":1, "withdraw_time": "2017-06-19 16:49:28", "withdraw_status": 1,"create_time": "2017-05-22 06:42:00", "update_time": "2017-06-19 16:49:28", "remark":"", "type": 0, "source": 0,"int_column": null, "bigint_column": null, "var_cloumn":null, "order_id": "MBK59200396791495433173267", "origin_order_fee": 200,"actual_order_fee": 0, "coefficient": 1.0
+}}
+{"database": "mbk_redpacket", "table": "mbk_redpacket_water", "type":"update", "ts": 1497890969, "ctype": 471041068,"xid": 2230056954, "commit": true, "position":"mysql-bin.000595:378102077", "gtid": "1f7b02c6-07db-11e7-8b6b-18ded7a38036:1388353302", "server_id": 89273,"thread_id": 1766346, "data":{"rp_water_id": "RP374520785412813312004549551497890965", "userid": "37452078541281331200454955", "fee": 119, "bikeid": "8620083105", "mobile": "15994490057", "city_code": "0771", "country": 0, "rp_withdraw_id": null, "recive_time": "2017-06-19 16:49:26", "recive_status": 1, "withdraw_time": null, "withdraw_status": 0, "create_time": "2017-06-19 16:49:26", "update_time": "2017-06-19 16:49:29", "remark": "", "type": 0, "source": 0, "int_column": null, "bigint_column": null, "var_cloumn": null, "order_id": "MBK86200831051497890289926", "origin_order_fee": 100, "actual_order_fee": 0, "coefficient": 1.0}, "old":{"rp_water_id": "RP374520785412813312004549551497890965", "userid": "37452078541281331200454955", "fee": 119, "bikeid": "8620083105", "mobile": "15994490057", "city_code": "0771", "country": 0, "rp_withdraw_id": null, "recive_time": "2017-06-19 16:49:26", "recive_status": 1, "withdraw_time": null, "withdraw_status": 0, "create_time": "2017-06-19 16:49:26", "update_time": "2017-06-19 16:49:26", "remark": "", "type": 0, "source": 0, "int_column": null, "bigint_column": null, "var_cloumn": null, "order_id": "MBK86200831051497890289926", "origin_order_fee": 100, "actual_order_fee": 0, "coefficient": null
+}}
